@@ -463,32 +463,7 @@ export const HomeView = () => {
         </div>
       </section>
 
-      {/* 6. WHOLESALE & DISTRIBUTOR B2B BANNER */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="space-y-4 max-w-2xl text-center lg:text-left">
-            <span className="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
-              DISTRIBUTOR & COMMERCIAL SUPPLY
-            </span>
-            <h2 className="font-heading font-extrabold text-2xl sm:text-4xl text-white leading-tight">
-              Deliver Quality Beverages, Build Profitable Partnerships.
-            </h2>
-            <p className="text-amber-100 text-xs sm:text-sm leading-relaxed font-light">
-              High distributor profit margins, pan-India logistics, and direct factory supply for commercial vending operators, resorts, and offices.
-            </p>
-          </div>
 
-          <Button
-            variant="secondary"
-            size="lg"
-            onClick={() => navigateTo('wholesale')}
-            icon={ArrowRight}
-            className="shrink-0 w-full sm:w-auto shadow-xl hover:scale-105 transition-transform"
-          >
-            BECOME A DISTRIBUTOR / B2B INQUIRY
-          </Button>
-        </div>
-      </section>
     </div>
   );
 };
