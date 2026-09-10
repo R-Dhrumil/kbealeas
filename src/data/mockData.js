@@ -37,17 +37,17 @@ export const COMPANY_INFO = {
     { title: "TRUST", desc: "Committed to consistency, care & customer satisfaction.", icon: "Users" }
   ],
   clientel: [
-    { name: "Prakruti Resort", category: "Hospitality & Resorts" },
-    { name: "Anju Corporation", category: "Corporate Enterprises" },
-    { name: "Rushee Beverages", category: "Beverage Supply" },
-    { name: "Trinity Smiles", category: "Healthcare Clinics" },
-    { name: "Aura Laser & Cosmetic Clinic", category: "Wellness Centers" },
-    { name: "The Tooth Clinic", category: "Multispeciality Clinics" },
-    { name: "Sheel Design Studio", category: "Architectural & Interior Design" },
-    { name: "SuperbizzleAD", category: "Media & Advertising" },
-    { name: "Sapphire Studio", category: "Creative Studios" },
-    { name: "JV Finance", category: "Financial Institutions" },
-    { name: "DS Associates", category: "Professional Consultancy" }
+    { name: "Prakruti Resort", category: "Hospitality & Resorts", image: "/clients/prakruti.jpg" },
+    { name: "Anju Corporation", category: "Corporate Enterprises", image: "/clients/anju.jpg" },
+    { name: "Rushee Beverages", category: "Beverage Supply", image: "/clients/rushee.jpg" },
+    { name: "Trinity Smiles", category: "Healthcare Clinics", image: "/clients/trinity.jpg" },
+    { name: "Aura Laser & Cosmetic Clinic", category: "Wellness Centers", image: "/clients/aura.jpg" },
+    { name: "The Tooth Clinic", category: "Multispeciality Clinics", image: "/clients/tooth_clinic.jpg" },
+    { name: "Sheel Design Studio", category: "Architect & Interior", image: "/clients/sheel_design.jpg" },
+    { name: "Superbizzlead", category: "Media & Advertising", image: "/clients/superbizzlead.jpg" },
+    { name: "Sapphire Studio", category: "Creative Studios", image: "/clients/sapphire.jpg" },
+    { name: "JV Finance", category: "Financial Institutions", image: "/clients/jv_finance.jpg" },
+    { name: "DS Associates", category: "Professional Consultancy", image: "/clients/ds_associates.jpg" }
   ]
 };
 

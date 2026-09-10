@@ -45,24 +45,36 @@ export const HomeView = () => {
   // Corporate Testimonials Data
   const clientTestimonials = [
     {
-      name: "Prakruti Resort",
+      name: "Chef Rajesh Varma",
+      role: "Director of Food & Beverage",
+      company: "Prakruti Luxury Resort",
       category: "Hospitality & Luxury Resorts",
+      clientLogo: "/clients/prakruti.jpg",
+      personImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
       quote: "KB Vrinda Tea and Sangam Iced Tea premixes have transformed our morning breakfast buffet. Instant preparation with authentic home-cooked taste!",
-      person: "Food & Beverage Director",
+      serves: "Vrinda Tea & Sangam Iced Tea",
       location: "Gujarat"
     },
     {
-      name: "Anju Corporation",
+      name: "Sneha Parikh",
+      role: "Head of Operations & Workplace",
+      company: "Anju Corporation",
       category: "Corporate Headquarters",
+      clientLogo: "/clients/anju.jpg",
+      personImage: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80",
       quote: "Our office employees love the Urban Roast Cappuccino. It saves time and tastes exactly like barista-made coffee.",
-      person: "Operations Head",
+      serves: "Urban Roast Cappuccino",
       location: "Vadodara"
     },
     {
-      name: "Trinity Smiles Clinic",
+      name: "Dr. Devendra Joshi",
+      role: "Chief Medical Director & Founder",
+      company: "Trinity Smiles Clinic",
       category: "Healthcare & Wellness Clinics",
+      clientLogo: "/clients/trinity.jpg",
+      personImage: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80",
       quote: "Serving KB hot beverages in our patient waiting lounge has received overwhelming positive feedback. Hygienic and rich taste.",
-      person: "Clinic Director",
+      serves: "Hot Beverage Hospitality Bar",
       location: "Gujarat"
     }
   ];
@@ -84,7 +96,7 @@ export const HomeView = () => {
             </h1>
 
             <p className="text-emerald-100 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-              India's premier multi-brand beverage premix platform. Enjoy authentic cardamom chai, rich frothy cappuccino, zesty iced teas, and decadent dark cocoa in seconds.
+              Vadodara's premier multi-brand beverage premix platform. Enjoy authentic cardamom chai, rich frothy cappuccino, zesty iced teas, and decadent dark cocoa in seconds.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
@@ -112,8 +124,8 @@ export const HomeView = () => {
 
             <div className="pt-8 border-t border-white/10 grid grid-cols-3 gap-4 text-center lg:text-left">
               <div>
-                <span className="text-kb-gold font-extrabold text-2xl font-heading block">1,000,000+</span>
-                <span className="text-xs text-emerald-100/80 font-medium">Cups Served Across India</span>
+                <span className="text-kb-gold font-extrabold text-2xl font-heading block">1,000+</span>
+                <span className="text-xs text-emerald-100/80 font-medium">Cups Served Across Vadodara</span>
               </div>
               <div>
                 <span className="text-kb-gold font-extrabold text-2xl font-heading block">4 Brands</span>
@@ -182,38 +194,50 @@ export const HomeView = () => {
                   </div>
                 </div>
 
-                {/* Middle Content: Tagline & Description */}
-                <div className="flex-1 space-y-3 flex flex-col justify-center">
-                  <div className="space-y-1.5">
-                    <h3 className="font-heading font-extrabold text-2xl text-kb-charcoal group-hover:text-kb-green transition-colors">
-                      "{brand.tagline}"
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-light">
-                      {brand.description}
-                    </p>
+                {/* Content: Tagline, Description, Offerings, and Explore Button */}
+                <div className="flex-1 flex flex-col justify-between gap-5 py-1">
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <h3 className="font-heading font-extrabold text-2xl text-kb-charcoal group-hover:text-kb-green transition-colors">
+                        "{brand.tagline}"
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-light">
+                        {brand.description}
+                      </p>
+                    </div>
+
+                    {/* Clean Flavor Names Row */}
+                    <div className="pt-1 flex flex-wrap items-center gap-2 text-xs text-slate-600 font-medium">
+                      <span className="font-bold text-slate-400">Offerings:</span>
+                      <span>{brandProds.map((p) => p.name).join(" • ")}</span>
+                    </div>
                   </div>
 
-                  {/* Clean Flavor Names Row */}
-                  <div className="pt-1 flex items-center gap-2 text-xs text-slate-600 font-medium">
-                    <span className="font-bold text-slate-400">Offerings:</span>
-                    <span>{brandProds.map((p) => p.name).join(" • ")}</span>
-                  </div>
-                </div>
+                  {/* Decent Animated Explore Button */}
+                  <div className="pt-2 flex items-center">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigateTo(`brand-${brand.id}`);
+                      }}
+                      style={{
+                        backgroundColor: brand.themeColor,
+                        boxShadow: `0 4px 14px -2px ${brand.themeColor}55`,
+                      }}
+                      className="group/btn relative inline-flex items-center gap-3 px-5 py-2.5 rounded-full text-white text-xs sm:text-sm font-semibold tracking-wider uppercase overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    >
+                      {/* Animated Shimmer Sweep */}
+                      <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none" />
 
-                {/* Right Action Button */}
-                <div className="lg:w-44 flex lg:flex-col justify-between items-center lg:items-end border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6 shrink-0 my-auto">
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigateTo(`brand-${brand.id}`);
-                    }}
-                    icon={ArrowRight}
-                    className="w-full sm:w-auto text-xs font-bold"
-                  >
-                    EXPLORE {brand.name}
-                  </Button>
+                      <span className="relative z-10 font-bold">EXPLORE {brand.name}</span>
+
+                      {/* Animated Trailing Arrow Capsule */}
+                      <span className="relative z-10 w-6 h-6 rounded-full bg-white/20 flex items-center justify-center transition-all duration-300 ease-out group-hover/btn:bg-white/30 group-hover/btn:translate-x-1.5">
+                        <ArrowRight className="w-3.5 h-3.5 text-white transition-transform duration-300 group-hover/btn:scale-110" />
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -396,28 +420,124 @@ export const HomeView = () => {
           </div>
         </div>
 
-        {/* Corporate Client Cards */}
+        {/* Corporate Client Cards with Official Company Images from Brochure */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
           {clientTestimonials.map((item, idx) => (
             <div
               key={idx}
-              className="bg-slate-900 p-6 rounded-3xl border border-slate-800 hover:border-kb-gold/60 transition-all duration-300 space-y-4 relative shadow-xl"
+              className="group relative bg-gradient-to-b from-slate-900/95 to-slate-900/70 rounded-3xl border border-slate-800 hover:border-kb-gold/60 shadow-xl hover:shadow-2xl hover:shadow-kb-gold/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 text-kb-gold flex items-center justify-center font-bold shrink-0">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-heading font-bold text-base text-white">{item.name}</h4>
-                  <span className="text-xs text-slate-400 block">{item.category}</span>
+              {/* Top Accent Line on Hover */}
+              <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-kb-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
+
+              {/* Official Client Company Image from Brochure PDF */}
+              <div className="relative h-44 sm:h-48 overflow-hidden bg-white/5 border-b border-slate-800 flex items-center justify-center">
+                <img
+                  src={item.clientLogo}
+                  alt={item.company}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
+                <div className="absolute top-3 right-3">
+                  <span className="bg-slate-950/85 backdrop-blur-md border border-kb-gold/30 text-kb-gold text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow">
+                    {item.category}
+                  </span>
                 </div>
               </div>
 
-              <p className="text-xs text-slate-300 italic leading-relaxed bg-slate-950/60 p-4 rounded-2xl border border-slate-800/80">
-                "{item.quote}"
-              </p>
+              <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
+                <div className="space-y-3">
+                  {/* Representative Person Profile */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative shrink-0">
+                      <img
+                        src={item.personImage}
+                        alt={item.name}
+                        className="w-11 h-11 rounded-full object-cover ring-2 ring-kb-gold/40 border border-slate-800 shadow"
+                      />
+                      <div className="absolute -bottom-0.5 -right-0.5 bg-kb-gold text-slate-950 rounded-full p-0.5 shadow">
+                        <CheckCircle2 className="w-2.5 h-2.5" />
+                      </div>
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-heading font-bold text-sm text-white group-hover:text-kb-gold transition-colors truncate">
+                        {item.name}
+                      </h4>
+                      <p className="text-[11px] text-slate-400 truncate">
+                        {item.role}
+                      </p>
+                    </div>
+
+                    {/* Star Rating */}
+                    <div className="flex items-center gap-0.5 text-kb-gold shrink-0">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-kb-gold text-kb-gold" />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Quote Box */}
+                  <div className="relative bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 group-hover:border-slate-700/80 transition-colors">
+                    <Quote className="w-4 h-4 text-kb-gold/40 mb-1 rotate-180" />
+                    <p className="text-xs text-slate-300 italic leading-relaxed font-light">
+                      "{item.quote}"
+                    </p>
+                  </div>
+                </div>
+
+                {/* Bottom Tag / Product Served */}
+                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+                  <span className="truncate">
+                    <strong className="text-slate-300 font-medium">Serving:</strong> {item.serves}
+                  </span>
+                  <span className="shrink-0 text-slate-400 font-medium flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-kb-gold" /> {item.location}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Full Client Roster from Brochure PDF */}
+        <div className="space-y-4 pt-6 border-t border-slate-800 relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-bold text-kb-gold uppercase tracking-wider block">
+                OUR CLIENTELE • BREWING TRUST, SERVING EXCELLENCE
+              </span>
+              <p className="text-xs text-slate-400 font-light">
+                Trusted by leading Gujarat resorts, corporate headquarters, clinics, and studios
+              </p>
+            </div>
+            <span className="text-[11px] text-slate-400 font-medium">11+ Premier Commercial Clients</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 pt-2">
+            {COMPANY_INFO.clientel.map((client, i) => (
+              <div
+                key={i}
+                className="group/client bg-slate-900/70 hover:bg-slate-900 border border-slate-800/90 hover:border-kb-gold/50 rounded-2xl p-2.5 transition-all duration-300 flex flex-col items-center justify-between text-center overflow-hidden hover:shadow-lg hover:-translate-y-0.5"
+              >
+                <div className="w-full h-20 rounded-xl overflow-hidden bg-white/5 flex items-center justify-center p-1 border border-slate-800/50 group-hover/client:border-kb-gold/30 transition-colors">
+                  <img
+                    src={client.image}
+                    alt={client.name}
+                    className="w-full h-full object-cover group-hover/client:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="pt-2 pb-0.5 w-full">
+                  <span className="text-xs font-semibold text-slate-200 block truncate group-hover/client:text-kb-gold transition-colors">
+                    {client.name}
+                  </span>
+                  <span className="text-[10px] text-slate-400 block truncate">
+                    {client.category}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Corporate Callout */}
