@@ -293,7 +293,7 @@ export const HomeView = () => {
         {/* 4 Clean Quality Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-kb-soft hover:shadow-xl transition-all space-y-4 relative overflow-hidden group">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-xs group-hover:bg-kb-green group-hover:text-white transition-colors">
               <Leaf className="w-6 h-6" />
             </div>
             <div className="space-y-2">
@@ -307,7 +307,7 @@ export const HomeView = () => {
           </div>
 
           <div className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-kb-soft hover:shadow-xl transition-all space-y-4 relative overflow-hidden group">
-            <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-xs group-hover:bg-kb-green group-hover:text-white transition-colors">
               <FlaskConical className="w-6 h-6" />
             </div>
             <div className="space-y-2">
@@ -321,7 +321,7 @@ export const HomeView = () => {
           </div>
 
           <div className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-kb-soft hover:shadow-xl transition-all space-y-4 relative overflow-hidden group">
-            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-xs group-hover:bg-kb-green group-hover:text-white transition-colors">
               <PackageCheck className="w-6 h-6" />
             </div>
             <div className="space-y-2">
@@ -335,7 +335,7 @@ export const HomeView = () => {
           </div>
 
           <div className="bg-white rounded-3xl p-7 border border-slate-200/80 shadow-kb-soft hover:shadow-xl transition-all space-y-4 relative overflow-hidden group">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-700 flex items-center justify-center font-bold shadow-xs">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shadow-xs group-hover:bg-kb-green group-hover:text-white transition-colors">
               <Medal className="w-6 h-6" />
             </div>
             <div className="space-y-2">
@@ -349,31 +349,7 @@ export const HomeView = () => {
           </div>
         </div>
 
-        {/* Founder Quality Guarantee Banner */}
-        <div className="bg-gradient-to-r from-kb-green-dark via-kb-green to-emerald-900 text-white rounded-3xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl border border-white/10">
-          <div className="flex items-center gap-5 text-center sm:text-left">
-            <div className="w-16 h-16 rounded-2xl bg-kb-gold/20 border border-kb-gold/40 flex items-center justify-center text-kb-gold shrink-0">
-              <Quote className="w-8 h-8" />
-            </div>
-            <div className="space-y-1">
-              <h4 className="font-heading font-extrabold text-xl text-white">
-                "Our Guarantee: Pure Taste, Every Single Cup."
-              </h4>
-              <p className="text-xs text-emerald-200">
-                Backed by Founder Hiral Shah, Kush Shah & Preeti Shah — Vadodara, Gujarat.
-              </p>
-            </div>
-          </div>
-
-          <Button
-            variant="secondary"
-            size="md"
-            onClick={() => navigateTo('about')}
-            className="shrink-0 text-xs font-bold shadow-lg"
-          >
-            Read Founder Story
-          </Button>
-        </div>
+        
       </section>
 
       {/* 5. CLEAN CORPORATE TRUST & METRICS SECTION */}

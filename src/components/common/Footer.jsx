@@ -10,31 +10,7 @@ export const Footer = () => {
   return (
     <footer className="bg-slate-900 text-slate-300 pt-16 pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
-        {/* Top Newsletter & Brand Promise Banner */}
-        <div className="bg-gradient-to-r from-kb-green to-emerald-900 rounded-3xl p-8 md:p-12 text-white flex flex-col lg:flex-row items-center justify-between gap-8 shadow-xl">
-          <div className="space-y-2 max-w-xl text-center lg:text-left">
-            <span className="bg-kb-gold/20 text-kb-gold border border-kb-gold/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-              {COMPANY_INFO.name} Ecosystem
-            </span>
-            <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-white">
-              Stay Connected to Pure Beverage Excellence
-            </h3>
-            <p className="text-emerald-100 text-sm">
-              Subscribe for wholesale announcements, new premix flavors, and exclusive corporate offers.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto max-w-md">
-            <input
-              type="email"
-              placeholder="Enter your business or personal email..."
-              className="px-4 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm text-white placeholder-emerald-200 focus:outline-none focus:bg-white/20 flex-1"
-            />
-            <Button variant="secondary" size="md" icon={ArrowRight}>
-              Subscribe
-            </Button>
-          </div>
-        </div>
+       
 
         {/* Main Footer Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-sm">
