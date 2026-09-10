@@ -233,6 +233,24 @@ export const Header = () => {
           >
             About KB
           </button>
+
+          <button
+            onClick={() => {
+              const el = document.getElementById('contact-us');
+              if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                navigateTo('contact');
+              }
+            }}
+            className={`px-3 py-1.5 rounded-xl transition-all duration-200 hover:text-kb-green hover:bg-emerald-50/60 active:scale-95 active:bg-emerald-100/60 cursor-pointer ${
+              activeView === 'contact'
+                ? 'text-kb-green font-bold bg-emerald-50 border border-emerald-100 shadow-xs'
+                : 'text-slate-700 font-medium'
+            }`}
+          >
+            Contact Us
+          </button>
         </nav>
 
         {/* Right Action Icons */}
@@ -371,7 +389,10 @@ export const Header = () => {
               Wholesale / B2B Inquiry
             </button>
             <button
-              onClick={() => navigateTo('about')}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                navigateTo('about');
+              }}
               className={`text-left px-3 py-2 rounded-lg transition-all duration-200 active:scale-98 ${
                 activeView === 'about'
                   ? 'bg-emerald-50 text-kb-green font-bold border border-emerald-100'
@@ -379,6 +400,24 @@ export const Header = () => {
               }`}
             >
               About KB
+            </button>
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                const el = document.getElementById('contact-us');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  navigateTo('contact');
+                }
+              }}
+              className={`text-left px-3 py-2 rounded-lg transition-all duration-200 active:scale-98 ${
+                activeView === 'contact'
+                  ? 'bg-emerald-50 text-kb-green font-bold border border-emerald-100'
+                  : 'hover:bg-slate-50 text-slate-700 hover:text-kb-green'
+              }`}
+            >
+              Contact Us
             </button>
             <button
               onClick={() => navigateTo('admin')}

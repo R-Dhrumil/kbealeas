@@ -68,37 +68,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Premix Categories */}
-          <div className="space-y-3">
-            <h5 className="font-heading font-bold text-white text-base">Shop by Category</h5>
-            <ul className="space-y-2 text-xs text-slate-400">
-              <li>
-                <button onClick={() => navigateTo('catalog', { category: 'tea' })} className="hover:text-white transition-colors">
-                  Vrinda Tea Premixes
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigateTo('catalog', { category: 'coffee' })} className="hover:text-white transition-colors">
-                  Urban Roast Coffee Premixes
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigateTo('catalog', { category: 'iced-tea' })} className="hover:text-white transition-colors">
-                  Sangam Iced Tea Premixes
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigateTo('catalog', { category: 'chocolate' })} className="hover:text-white transition-colors">
-                  Coco Joy Chocolate Premixes
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigateTo('wholesale')} className="hover:text-white transition-colors">
-                  Commercial & B2B Orders
-                </button>
-              </li>
-            </ul>
-          </div>
 
           {/* Column 4: Quick Links & Support */}
           <div className="space-y-3">
@@ -115,18 +84,23 @@ export const Footer = () => {
                 </button>
               </li>
               <li>
-                <button onClick={() => navigateTo('contact')} className="hover:text-white transition-colors">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById('contact-us');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      navigateTo('contact');
+                    }
+                  }}
+                  className="hover:text-white transition-colors"
+                >
                   Contact Vadodara Office
                 </button>
               </li>
               <li>
                 <button onClick={() => navigateTo('faq')} className="hover:text-white transition-colors">
                   Help & FAQ
-                </button>
-              </li>
-              <li>
-                <button onClick={() => navigateTo('admin')} className="hover:text-kb-gold text-amber-400 font-semibold transition-colors">
-                  Admin Management
                 </button>
               </li>
             </ul>

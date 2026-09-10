@@ -29,12 +29,37 @@ import {
   CheckCircle,
   TrendingUp,
   MapPin,
-  Heart
+  Heart,
+  Mail,
+  Phone,
+  Send,
+  MessageSquare
 } from 'lucide-react';
 
 export const HomeView = () => {
-  const { navigateTo, products } = useApp();
+  const { navigateTo, products, addToast } = useApp();
   const [activeBrandTab, setActiveBrandTab] = useState('all');
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    inquiryType: 'General Inquiry',
+    message: ''
+  });
+
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    if (addToast) {
+      addToast('Thank you! Your message has been received. Our team will contact you shortly.', 'success');
+    }
+    setContactForm({
+      name: '',
+      phone: '',
+      email: '',
+      inquiryType: 'General Inquiry',
+      message: ''
+    });
+  };
 
   const featuredProducts = products.filter((p) => p.isFeatured);
 
@@ -556,6 +581,194 @@ export const HomeView = () => {
           >
             SUBMIT WHOLESALE B2B INQUIRY
           </Button>
+        </div>
+      </section>
+
+      {/* 6. CONTACT US SECTION */}
+      <section id="contact-us" className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <Badge brand="kb">CONNECT WITH US</Badge>
+          <h2 className="font-heading font-extrabold text-3xl sm:text-5xl text-kb-charcoal tracking-tight">
+            Get In Touch With KB Beverages
+          </h2>
+          <p className="text-sm sm:text-base text-slate-500 leading-relaxed font-light">
+            Have questions about our blends, commercial supply, or looking to partner with us? Our Vadodara team is here to assist.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Left Column: Headquarters & Direct Contact Card */}
+          <div className="lg:col-span-5 bg-gradient-to-br from-slate-950 via-kb-green-dark to-slate-900 text-white p-8 sm:p-10 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden flex flex-col justify-between space-y-8">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-kb-gold/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-6 relative z-10">
+              <div className="space-y-2">
+                <span className="text-[11px] font-extrabold tracking-widest text-kb-gold uppercase">
+                  VADODARA HEADQUARTERS
+                </span>
+                <h3 className="font-heading font-extrabold text-2xl text-white">
+                  We'd Love to Hear From You
+                </h3>
+                <p className="text-xs text-emerald-100/80 leading-relaxed font-light">
+                  Visit our office or reach out directly for retail distributions, corporate cafeteria setups, or instant order assistance.
+                </p>
+              </div>
+
+              <div className="space-y-5 pt-2">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-white/10 text-kb-gold flex items-center justify-center shrink-0 border border-white/10">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-300 block">Registered Office</span>
+                    <p className="text-xs text-slate-300/90 leading-relaxed mt-0.5">
+                      {COMPANY_INFO.address}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-white/10 text-kb-gold flex items-center justify-center shrink-0 border border-white/10">
+                    <Phone className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-300 block">Call / WhatsApp Support</span>
+                    <div className="flex flex-col gap-0.5 mt-0.5 text-xs text-emerald-100 font-semibold">
+                      {COMPANY_INFO.phones.map((phone, i) => (
+                        <a key={i} href={`tel:${phone.replace(/\s+/g, '')}`} className="hover:text-kb-gold transition-colors">
+                          {phone}
+                        </a>
+                      ))}
+                    </div>
+                    <span className="text-[10px] text-slate-400 block mt-1">Mon – Sat: 9:30 AM to 7:00 PM IST</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-2xl bg-white/10 text-kb-gold flex items-center justify-center shrink-0 border border-white/10">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-300 block">Email Inquiries</span>
+                    <a href={`mailto:${COMPANY_INFO.email}`} className="text-xs text-emerald-100 font-semibold hover:text-kb-gold transition-colors mt-0.5 block">
+                      {COMPANY_INFO.email}
+                    </a>
+                    <span className="text-[10px] text-slate-400 block mt-0.5">Dedicated commercial & customer support desk</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-white/10 relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-xs text-slate-300 font-medium">Interested in B2B Wholesale?</span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigateTo('wholesale')}
+                icon={ArrowRight}
+                className="w-full sm:w-auto text-xs font-bold shadow"
+              >
+                Wholesale Portal
+              </Button>
+            </div>
+          </div>
+
+          {/* Right Column: Interactive Contact Form */}
+          <div className="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200/80 shadow-kb-soft space-y-6 relative">
+            <div className="space-y-1">
+              <h3 className="font-heading font-extrabold text-2xl text-kb-charcoal">
+                Send Us a Message
+              </h3>
+              <p className="text-xs text-slate-500 font-light">
+                Fill out the quick inquiry form below and our customer experience team will connect with you.
+              </p>
+            </div>
+
+            <form onSubmit={handleContactSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">Your Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={contactForm.name}
+                    onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                    placeholder="e.g. Ramesh Patel"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:bg-white focus:border-kb-green focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={contactForm.phone}
+                    onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+                    placeholder="e.g. +91 98765 43210"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:bg-white focus:border-kb-green focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    value={contactForm.email}
+                    onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                    placeholder="name@company.com"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:bg-white focus:border-kb-green focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">Inquiry Type</label>
+                  <select
+                    value={contactForm.inquiryType}
+                    onChange={(e) => setContactForm({ ...contactForm, inquiryType: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:bg-white focus:border-kb-green focus:outline-none transition-colors"
+                  >
+                    <option value="General Inquiry">General Product Inquiry</option>
+                    <option value="Commercial Supply">Commercial & Resort Supply</option>
+                    <option value="Distributorship">Distributorship / Franchise</option>
+                    <option value="Custom Order">Bulk Order or Custom Packaging</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-700 block">Your Message *</label>
+                <textarea
+                  rows={4}
+                  required
+                  value={contactForm.message}
+                  onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                  placeholder="Tell us about your requirement, flavor preferences, or questions..."
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm focus:bg-white focus:border-kb-green focus:outline-none transition-colors resize-none"
+                />
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span className="text-[11px] text-slate-400">
+                  🔒 We protect your data and respond within 24 hours.
+                </span>
+
+                <Button
+                  variant="primary"
+                  size="md"
+                  type="submit"
+                  icon={Send}
+                  className="w-full sm:w-auto text-xs font-bold px-6 shadow-md"
+                >
+                  SEND MESSAGE
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       </section>
 
