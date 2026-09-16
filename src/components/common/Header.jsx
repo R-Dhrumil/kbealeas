@@ -30,7 +30,8 @@ export const Header = () => {
     setIsMobileMenuOpen,
     searchQuery,
     setSearchQuery,
-    user
+    user,
+    logoutUser
   } = useApp();
 
   const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
@@ -271,160 +272,191 @@ export const Header = () => {
             <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
           </form> */}
 
-          {/* Unified Account Section (housing Account, Like, and Cart) */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsAccountDropdownOpen(true)}
-            onMouseLeave={() => setIsAccountDropdownOpen(false)}
-          >
-            <button
-              onClick={() => navigateTo('account')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
-                activeView === 'account' || activeView === 'wishlist' || activeView === 'cart'
-                  ? 'bg-kb-green text-white border-kb-green shadow-md shadow-kb-green/20'
-                  : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-kb-green/40 shadow-xs'
-              }`}
-              title="Account, Liked & Cart"
+          {/* Account & User Section */}
+          {!user?.isLoggedIn ? (
+            <div className="flex items-center gap-2">
+              {/* Mini Cart Button */}
+              <button
+                onClick={() => setIsMiniCartOpen(true)}
+                className="relative p-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all cursor-pointer"
+                title="My Cart"
+              >
+                <ShoppingBag className="w-4 h-4 text-slate-700" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full shadow-xs">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Sign In Button */}
+              <button
+                onClick={() => navigateTo('auth')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all duration-200 active:scale-95 cursor-pointer ${
+                  activeView === 'auth'
+                    ? 'bg-kb-green text-white shadow-md shadow-kb-green/20'
+                    : 'bg-kb-green text-white hover:bg-emerald-700 shadow-xs'
+                }`}
+              >
+                <User className="w-3.5 h-3.5 text-white" />
+                <span>Sign In</span>
+              </button>
+            </div>
+          ) : (
+            <div
+              className="relative"
+              onMouseEnter={() => setIsAccountDropdownOpen(true)}
+              onMouseLeave={() => setIsAccountDropdownOpen(false)}
             >
-              <div className="w-6 h-6 rounded-full bg-kb-green/10 text-kb-green flex items-center justify-center font-bold">
-                <User className="w-3.5 h-3.5 text-inherit" />
-              </div>
-              <span className="text-xs font-bold hidden sm:inline">
-                {user?.name ? user.name.split(' ')[0] : 'Account'}
-              </span>
-
-              {/* Combined indicator badges for Cart & Like */}
-              {(cartCount > 0 || wishlist.length > 0) && (
-                <div className="flex items-center gap-1">
-                  {wishlist.length > 0 && (
-                    <span
-                      className="bg-rose-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
-                      title={`${wishlist.length} liked items`}
-                    >
-                      <Heart className="w-2.5 h-2.5 fill-white" />
-                    </span>
-                  )}
-                  {cartCount > 0 && (
-                    <span
-                      className="bg-amber-400 text-slate-900 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full shadow-xs"
-                      title={`${cartCount} items in cart`}
-                    >
-                      {cartCount}
-                    </span>
-                  )}
+              <button
+                onClick={() => navigateTo('account')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
+                  activeView === 'account' || activeView === 'wishlist' || activeView === 'cart'
+                    ? 'bg-kb-green text-white border-kb-green shadow-md shadow-kb-green/20'
+                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200 hover:border-kb-green/40 shadow-xs'
+                }`}
+                title="Account, Liked & Cart"
+              >
+                <div className="w-6 h-6 rounded-full bg-kb-green/10 text-kb-green flex items-center justify-center font-bold">
+                  <User className="w-3.5 h-3.5 text-inherit" />
                 </div>
-              )}
+                <span className="text-xs font-bold hidden sm:inline">
+                  {user?.name ? user.name.split(' ')[0] : 'Account'}
+                </span>
 
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isAccountDropdownOpen ? 'rotate-180' : 'text-slate-400'}`} />
-            </button>
+                {/* Combined indicator badges for Cart & Like */}
+                {(cartCount > 0 || wishlist.length > 0) && (
+                  <div className="flex items-center gap-1">
+                    {wishlist.length > 0 && (
+                      <span
+                        className="bg-rose-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+                        title={`${wishlist.length} liked items`}
+                      >
+                        <Heart className="w-2.5 h-2.5 fill-white" />
+                      </span>
+                    )}
+                    {cartCount > 0 && (
+                      <span
+                        className="bg-amber-400 text-slate-900 text-[10px] font-extrabold px-1.5 py-0.2 rounded-full shadow-xs"
+                        title={`${cartCount} items in cart`}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
+                )}
 
-            {/* Account Dropdown Menu */}
-            {isAccountDropdownOpen && (
-              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 animate-fade-in z-50 space-y-1.5">
-                {/* Account Profile Header */}
-                <div
-                  onClick={() => {
-                    setIsAccountDropdownOpen(false);
-                    navigateTo('account');
-                  }}
-                  className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50/60 rounded-2xl cursor-pointer hover:shadow-xs transition-all border border-emerald-100/60"
-                >
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Customer Account</span>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <span className="font-heading font-extrabold text-sm text-kb-charcoal truncate">{user?.name}</span>
-                    <span className="text-[10px] text-kb-green font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200 shadow-xs">View</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isAccountDropdownOpen ? 'rotate-180' : 'text-slate-400'}`} />
+              </button>
+
+              {/* Account Dropdown Menu */}
+              {isAccountDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 animate-fade-in z-50 space-y-1.5">
+                  {/* Account Profile Header */}
+                  <div
+                    onClick={() => {
+                      setIsAccountDropdownOpen(false);
+                      navigateTo('account');
+                    }}
+                    className="p-3 bg-gradient-to-r from-emerald-50 to-teal-50/60 rounded-2xl cursor-pointer hover:shadow-xs transition-all border border-emerald-100/60"
+                  >
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Customer Account</span>
+                    <div className="flex items-center justify-between mt-0.5">
+                      <span className="font-heading font-extrabold text-sm text-kb-charcoal truncate">{user?.name || 'Customer'}</span>
+                      <span className="text-[10px] text-kb-green font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-200 shadow-xs">View</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 pt-1">
+                    {/* Cart Item */}
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        setIsMiniCartOpen(true);
+                      }}
+                      className="w-full p-2.5 rounded-2xl hover:bg-emerald-50/70 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <ShoppingBag className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-slate-800 group-hover:text-kb-green block">My Cart</span>
+                          <span className="text-[10px] text-slate-400 block">View shopping basket</span>
+                        </div>
+                      </div>
+                      <span className="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
+                        {cartCount} {cartCount === 1 ? 'item' : 'items'}
+                      </span>
+                    </button>
+
+                    {/* Like Button (Wishlist) Item */}
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        navigateTo('wishlist');
+                      }}
+                      className="w-full p-2.5 rounded-2xl hover:bg-rose-50/70 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Heart className="w-4 h-4 fill-rose-500/20" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-slate-800 group-hover:text-rose-600 block">Liked Premixes</span>
+                          <span className="text-[10px] text-slate-400 block">Saved items & favorites</span>
+                        </div>
+                      </div>
+                      <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                        {wishlist.length} liked
+                      </span>
+                    </button>
+
+                    {/* Orders & Tracking */}
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        navigateTo('account');
+                      }}
+                      className="w-full p-2.5 rounded-2xl hover:bg-slate-50 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <Package className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-slate-800 block">Order History</span>
+                          <span className="text-[10px] text-slate-400 block">Track shipments & receipts</span>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                    </button>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-xs px-2">
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        navigateTo('account');
+                      }}
+                      className="text-slate-500 hover:text-kb-green font-semibold text-[11px] cursor-pointer"
+                    >
+                      Manage Account
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsAccountDropdownOpen(false);
+                        logoutUser();
+                      }}
+                      className="text-rose-600 hover:text-rose-700 font-semibold text-[11px] cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
                   </div>
                 </div>
-
-                <div className="space-y-1 pt-1">
-                  {/* Cart Item */}
-                  <button
-                    onClick={() => {
-                      setIsAccountDropdownOpen(false);
-                      setIsMiniCartOpen(true);
-                    }}
-                    className="w-full p-2.5 rounded-2xl hover:bg-emerald-50/70 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <ShoppingBag className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-800 group-hover:text-kb-green block">My Cart</span>
-                        <span className="text-[10px] text-slate-400 block">View shopping basket</span>
-                      </div>
-                    </div>
-                    <span className="bg-amber-400 text-slate-950 text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
-                      {cartCount} {cartCount === 1 ? 'item' : 'items'}
-                    </span>
-                  </button>
-
-                  {/* Like Button (Wishlist) Item */}
-                  <button
-                    onClick={() => {
-                      setIsAccountDropdownOpen(false);
-                      navigateTo('wishlist');
-                    }}
-                    className="w-full p-2.5 rounded-2xl hover:bg-rose-50/70 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <Heart className="w-4 h-4 fill-rose-500/20" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-800 group-hover:text-rose-600 block">Liked Premixes</span>
-                        <span className="text-[10px] text-slate-400 block">Saved items & favorites</span>
-                      </div>
-                    </div>
-                    <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
-                      {wishlist.length} liked
-                    </span>
-                  </button>
-
-                  {/* Orders & Tracking */}
-                  <button
-                    onClick={() => {
-                      setIsAccountDropdownOpen(false);
-                      navigateTo('account');
-                    }}
-                    className="w-full p-2.5 rounded-2xl hover:bg-slate-50 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <Package className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-800 block">Order History</span>
-                        <span className="text-[10px] text-slate-400 block">Track shipments & receipts</span>
-                      </div>
-                    </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
-                  </button>
-                </div>
-
-                <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-xs px-2">
-                  <button
-                    onClick={() => {
-                      setIsAccountDropdownOpen(false);
-                      navigateTo('account');
-                    }}
-                    className="text-slate-500 hover:text-kb-green font-semibold text-[11px]"
-                  >
-                    Manage Account
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsAccountDropdownOpen(false);
-                      navigateTo('auth');
-                    }}
-                    className="text-rose-600 hover:text-rose-700 font-semibold text-[11px]"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -505,19 +537,35 @@ export const Header = () => {
                 </button>
               </div>
 
-              <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  navigateTo('account');
-                }}
-                className="w-full text-left p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between text-xs font-bold text-slate-700 active:scale-98"
-              >
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-slate-500" />
-                  <span>Customer Profile ({user?.name})</span>
-                </div>
-                <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              </button>
+              {!user?.isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    navigateTo('auth');
+                  }}
+                  className="w-full text-left p-3 bg-kb-green text-white rounded-xl flex items-center justify-between text-xs font-bold active:scale-98 shadow-xs cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-white" />
+                    <span>Sign In / Create Account</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-white" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    navigateTo('account');
+                  }}
+                  className="w-full text-left p-2.5 bg-white rounded-xl border border-slate-200 flex items-center justify-between text-xs font-bold text-slate-700 active:scale-98 cursor-pointer"
+                >
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-slate-500" />
+                    <span>Customer Profile ({user?.name || 'Account'})</span>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                </button>
+              )}
             </div>
 
             {/* Mobile Brands List */}

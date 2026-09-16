@@ -37,6 +37,23 @@ export const AccountView = () => {
 
   const favoritedProducts = products.filter((p) => wishlist.includes(p.id));
 
+  if (!user?.isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto my-16 p-8 bg-white rounded-3xl border border-slate-100 shadow-kb-soft text-center space-y-4 animate-fade-in">
+        <div className="w-16 h-16 rounded-full bg-emerald-50 text-kb-green mx-auto flex items-center justify-center font-bold">
+          <User className="w-8 h-8" />
+        </div>
+        <h2 className="font-heading font-extrabold text-2xl text-kb-charcoal">Sign In Required</h2>
+        <p className="text-xs text-slate-500 leading-relaxed">
+          Please sign in to access your customer profile, order history, address book, and saved premixes.
+        </p>
+        <Button variant="primary" size="lg" onClick={() => navigateTo('auth')} icon={ArrowRight} className="w-full">
+          SIGN IN TO YOUR ACCOUNT
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fade-in">
       <div className="border-b border-slate-200 pb-4">
