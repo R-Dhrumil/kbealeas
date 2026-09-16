@@ -2,58 +2,63 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
-import { Lock, Mail, User, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, User, Phone, ArrowRight, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 export const AuthView = () => {
-  const { setUser, addToast, navigateTo } = useApp();
+  const { loginUser, registerUser, isLoadingAuth, navigateTo } = useApp();
   const [mode, setMode] = useState('login'); // login, register, forgot
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [loginData, setLoginData] = useState({
-    email: "kush@kbealeas.store",
-    password: "••••••••"
+    emailOrPhone: '',
+    password: ''
   });
 
   const [regData, setRegData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: ""
+    fullName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: ''
   });
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setUser((prev) => ({ ...prev, isLoggedIn: true, email: loginData.email }));
-    addToast('Logged in successfully!', 'success');
-    navigateTo('account');
+    setErrorMessage('');
+    try {
+      await loginUser({
+        emailOrPhone: loginData.emailOrPhone,
+        password: loginData.password
+      });
+      navigateTo('account');
+    } catch (err) {
+      setErrorMessage(err.message || 'Failed to sign in. Please check your credentials.');
+    }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage('');
     if (regData.password !== regData.confirmPassword) {
-      addToast('Passwords do not match!', 'error');
+      setErrorMessage('Passwords do not match.');
       return;
     }
-    setUser({
-      isLoggedIn: true,
-      name: regData.name || "New Customer",
-      email: regData.email,
-      phone: regData.phone,
-      addresses: [
-        {
-          id: "addr-1",
-          name: regData.name || "New Customer",
-          phone: regData.phone,
-          addressLine: "202, Sai Pancham Flat, Manjalpur Naka",
-          city: "Vadodara",
-          state: "Gujarat",
-          pincode: "390011",
-          isDefault: true
-        }
-      ]
-    });
-    addToast('Account created successfully!', 'success');
-    navigateTo('account');
+    if (regData.password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
+      return;
+    }
+    try {
+      await registerUser({
+        fullName: regData.fullName,
+        email: regData.email,
+        phone: regData.phone,
+        password: regData.password,
+        confirmPassword: regData.confirmPassword
+      });
+      navigateTo('account');
+    } catch (err) {
+      setErrorMessage(err.message || 'Failed to register account.');
+    }
   };
 
   return (
@@ -72,18 +77,28 @@ export const AuthView = () => {
         {/* Auth Modes Switcher Tabs */}
         <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-bold text-slate-600">
           <button
-            onClick={() => setMode('login')}
+            type="button"
+            onClick={() => { setMode('login'); setErrorMessage(''); }}
             className={`flex-1 py-2 rounded-lg transition-all ${mode === 'login' ? 'bg-white text-kb-green shadow-xs' : ''}`}
           >
             Sign In
           </button>
           <button
-            onClick={() => setMode('register')}
+            type="button"
+            onClick={() => { setMode('register'); setErrorMessage(''); }}
             className={`flex-1 py-2 rounded-lg transition-all ${mode === 'register' ? 'bg-white text-kb-green shadow-xs' : ''}`}
           >
             Create Account
           </button>
         </div>
+
+        {/* ERROR ALERT DISPLAY */}
+        {errorMessage && (
+          <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl p-3.5 flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+            <span className="leading-snug">{errorMessage}</span>
+          </div>
+        )}
 
         {/* LOGIN FORM */}
         {mode === 'login' && (
@@ -94,8 +109,9 @@ export const AuthView = () => {
                 <input
                   type="text"
                   required
-                  value={loginData.email}
-                  onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                  placeholder="Enter email or phone number"
+                  value={loginData.emailOrPhone}
+                  onChange={(e) => setLoginData({ ...loginData, emailOrPhone: e.target.value })}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
                 />
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -107,7 +123,7 @@ export const AuthView = () => {
                 <label className="text-xs font-bold text-slate-700">Password</label>
                 <button
                   type="button"
-                  onClick={() => setMode('forgot')}
+                  onClick={() => { setMode('forgot'); setErrorMessage(''); }}
                   className="text-xs font-semibold text-kb-green hover:underline"
                 >
                   Forgot Password?
@@ -117,6 +133,7 @@ export const AuthView = () => {
                 <input
                   type="password"
                   required
+                  placeholder="Enter your password"
                   value={loginData.password}
                   onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
@@ -125,8 +142,15 @@ export const AuthView = () => {
               </div>
             </div>
 
-            <Button variant="primary" size="lg" type="submit" icon={ArrowRight} className="w-full">
-              SIGN IN TO KB
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              disabled={isLoadingAuth}
+              icon={isLoadingAuth ? Loader2 : ArrowRight}
+              className="w-full"
+            >
+              {isLoadingAuth ? 'AUTHENTICATING...' : 'SIGN IN TO KB'}
             </Button>
           </form>
         )}
@@ -136,64 +160,87 @@ export const AuthView = () => {
           <form onSubmit={handleRegisterSubmit} className="space-y-4">
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Full Name</label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Kush Shah"
-                value={regData.name}
-                onChange={(e) => setRegData({ ...regData, name: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Kush Shah"
+                  value={regData.fullName}
+                  onChange={(e) => setRegData({ ...regData, fullName: e.target.value })}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
+                />
+                <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              </div>
             </div>
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Email Address</label>
-              <input
-                type="email"
-                required
-                placeholder="kush@example.com"
-                value={regData.email}
-                onChange={(e) => setRegData({ ...regData, email: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  type="email"
+                  required
+                  placeholder="kush@example.com"
+                  value={regData.email}
+                  onChange={(e) => setRegData({ ...regData, email: e.target.value })}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
+                />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Mobile Phone</label>
-              <input
-                type="text"
-                required
-                placeholder="+91 96240 91000"
-                value={regData.phone}
-                onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
-              />
+              <label className="text-xs font-bold text-slate-700 block mb-1">Mobile Phone (Optional)</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="+91 96240 91000"
+                  value={regData.phone}
+                  onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
+                />
+                <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              </div>
             </div>
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={regData.password}
-                onChange={(e) => setRegData({ ...regData, password: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  type="password"
+                  required
+                  placeholder="At least 6 characters"
+                  value={regData.password}
+                  onChange={(e) => setRegData({ ...regData, password: e.target.value })}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
+                />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              </div>
             </div>
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">Confirm Password</label>
-              <input
-                type="password"
-                required
-                value={regData.confirmPassword}
-                onChange={(e) => setRegData({ ...regData, confirmPassword: e.target.value })}
-                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
-              />
+              <div className="relative">
+                <input
+                  type="password"
+                  required
+                  placeholder="Re-enter your password"
+                  value={regData.confirmPassword}
+                  onChange={(e) => setRegData({ ...regData, confirmPassword: e.target.value })}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-kb-green focus:outline-none"
+                />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              </div>
             </div>
 
-            <Button variant="primary" size="lg" type="submit" icon={CheckCircle2} className="w-full">
-              CREATE MY ACCOUNT
+            <Button
+              variant="primary"
+              size="lg"
+              type="submit"
+              disabled={isLoadingAuth}
+              icon={isLoadingAuth ? Loader2 : CheckCircle2}
+              className="w-full"
+            >
+              {isLoadingAuth ? 'CREATING ACCOUNT...' : 'CREATE MY ACCOUNT'}
             </Button>
           </form>
         )}
@@ -224,7 +271,7 @@ export const AuthView = () => {
 
             <button
               type="button"
-              onClick={() => setMode('login')}
+              onClick={() => { setMode('login'); setErrorMessage(''); }}
               className="text-xs font-bold text-slate-500 hover:text-slate-700 block text-center w-full mt-2"
             >
               Back to Sign In

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PRODUCTS as INITIAL_PRODUCTS, COMPANY_INFO } from '../data/mockData';
+import { authService } from '../services/authService';
 
 const AppContext = createContext();
 
@@ -47,25 +48,58 @@ export const AppProvider = ({ children }) => {
     }
   });
 
-  // Customer Auth State
+  // Customer Auth State (Dynamic, default clean state)
+  const [token, setToken] = useState(() => localStorage.getItem('kb_auth_token') || null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
   const [user, setUser] = useState({
     isLoggedIn: false,
-    name: "Kush Shah",
-    email: "kush@kbealeas.store",
-    phone: "+91 96240 91000",
-    addresses: [
-      {
-        id: "addr-1",
-        name: "Kush Shah",
-        phone: "+91 96240 91000",
-        addressLine: "202, Sai Pancham Flat, Gajanand Society, Manjalpur Naka",
-        city: "Vadodara",
-        state: "Gujarat",
-        pincode: "390011",
-        isDefault: true
-      }
-    ]
+    id: null,
+    name: '',
+    email: '',
+    phone: '',
+    role: 'Customer',
+    addresses: []
   });
+
+  // Hydrate user session on mount if token exists in localStorage
+  useEffect(() => {
+    const verifyUserSession = async () => {
+      const storedToken = localStorage.getItem('kb_auth_token');
+      if (!storedToken) return;
+
+      setIsLoadingAuth(true);
+      try {
+        const userDto = await authService.getCurrentUser(storedToken);
+        setToken(storedToken);
+        setUser({
+          isLoggedIn: true,
+          id: userDto.id,
+          name: userDto.fullName || userDto.name || '',
+          email: userDto.email || '',
+          phone: userDto.phone || '',
+          role: userDto.role || 'Customer',
+          addresses: []
+        });
+      } catch (err) {
+        console.warn('Session expired or invalid token:', err.message);
+        localStorage.removeItem('kb_auth_token');
+        setToken(null);
+        setUser({
+          isLoggedIn: false,
+          id: null,
+          name: '',
+          email: '',
+          phone: '',
+          role: 'Customer',
+          addresses: []
+        });
+      } finally {
+        setIsLoadingAuth(false);
+      }
+    };
+
+    verifyUserSession();
+  }, []);
 
   // Orders State
   const [orders, setOrders] = useState([
@@ -273,6 +307,75 @@ export const AppProvider = ({ children }) => {
     addToast('Product deleted from catalog', 'info');
   };
 
+  // Real Auth Actions
+  const loginUser = async (loginData) => {
+    setIsLoadingAuth(true);
+    try {
+      const response = await authService.login(loginData);
+      const { token: jwtToken, user: userDto, message } = response;
+      localStorage.setItem('kb_auth_token', jwtToken);
+      setToken(jwtToken);
+      setUser({
+        isLoggedIn: true,
+        id: userDto.id,
+        name: userDto.fullName || '',
+        email: userDto.email || '',
+        phone: userDto.phone || '',
+        role: userDto.role || 'Customer',
+        addresses: []
+      });
+      addToast(message || 'Logged in successfully!', 'success');
+      return { success: true, user: userDto };
+    } catch (error) {
+      addToast(error.message, 'error');
+      throw error;
+    } finally {
+      setIsLoadingAuth(false);
+    }
+  };
+
+  const registerUser = async (regData) => {
+    setIsLoadingAuth(true);
+    try {
+      const response = await authService.register(regData);
+      const { token: jwtToken, user: userDto, message } = response;
+      localStorage.setItem('kb_auth_token', jwtToken);
+      setToken(jwtToken);
+      setUser({
+        isLoggedIn: true,
+        id: userDto.id,
+        name: userDto.fullName || '',
+        email: userDto.email || '',
+        phone: userDto.phone || '',
+        role: userDto.role || 'Customer',
+        addresses: []
+      });
+      addToast(message || 'Account created successfully!', 'success');
+      return { success: true, user: userDto };
+    } catch (error) {
+      addToast(error.message, 'error');
+      throw error;
+    } finally {
+      setIsLoadingAuth(false);
+    }
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem('kb_auth_token');
+    setToken(null);
+    setUser({
+      isLoggedIn: false,
+      id: null,
+      name: '',
+      email: '',
+      phone: '',
+      role: 'Customer',
+      addresses: []
+    });
+    addToast('Logged out successfully.', 'info');
+    navigateTo('auth');
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -304,8 +407,13 @@ export const AppProvider = ({ children }) => {
         wishlist,
         toggleWishlist,
         isInWishlist,
+        token,
         user,
         setUser,
+        isLoadingAuth,
+        loginUser,
+        registerUser,
+        logoutUser,
         orders,
         placeOrder,
         lastPlacedOrder,

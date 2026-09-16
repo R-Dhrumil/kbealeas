@@ -29,7 +29,8 @@ export const AccountView = () => {
     products,
     removeFromCart,
     updateCartQuantity,
-    cartTotal
+    cartTotal,
+    logoutUser
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('orders'); // orders, cart, wishlist, profile, addresses
@@ -41,7 +42,7 @@ export const AccountView = () => {
       <div className="border-b border-slate-200 pb-4">
         <Badge brand="kb">CUSTOMER PORTAL</Badge>
         <h1 className="font-heading font-extrabold text-3xl text-kb-charcoal mt-1">
-          Welcome back, {user.name}!
+          Welcome back, {user.name || 'Valued Customer'}!
         </h1>
       </div>
 
@@ -126,12 +127,12 @@ export const AccountView = () => {
             }`}
           >
             <MapPin className="w-4 h-4" />
-            <span>Address Book ({user.addresses.length})</span>
+            <span>Address Book ({user.addresses ? user.addresses.length : 0})</span>
           </button>
 
           <button
-            onClick={() => navigateTo('auth')}
-            className="w-full text-left px-4 py-3 rounded-2xl font-bold text-xs flex items-center gap-3 text-rose-600 hover:bg-rose-50 transition-all pt-4 border-t border-slate-100"
+            onClick={logoutUser}
+            className="w-full text-left px-4 py-3 rounded-2xl font-bold text-xs flex items-center gap-3 text-rose-600 hover:bg-rose-50 transition-all pt-4 border-t border-slate-100 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Sign Out</span>
@@ -377,23 +378,23 @@ export const AccountView = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-1">
                   <span className="text-xs text-slate-400 font-bold block">Full Name</span>
-                  <span className="font-bold text-kb-charcoal text-base">{user.name}</span>
+                  <span className="font-bold text-kb-charcoal text-base">{user.name || 'Not provided'}</span>
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-1">
                   <span className="text-xs text-slate-400 font-bold block">Email Address</span>
-                  <span className="font-bold text-kb-charcoal text-base">{user.email}</span>
+                  <span className="font-bold text-kb-charcoal text-base">{user.email || 'Not provided'}</span>
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60 space-y-1">
                   <span className="text-xs text-slate-400 font-bold block">Phone Number</span>
-                  <span className="font-bold text-kb-charcoal text-base">{user.phone}</span>
+                  <span className="font-bold text-kb-charcoal text-base">{user.phone || 'Not provided'}</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* TAB 3: ADDRESSES */}
+          {/* TAB 5: ADDRESSES */}
           {activeTab === 'addresses' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -405,22 +406,30 @@ export const AccountView = () => {
                 </Button>
               </div>
 
-              <div className="space-y-4">
-                {user.addresses.map((addr) => (
-                  <div key={addr.id} className="p-5 rounded-2xl border-2 border-kb-green/30 bg-kb-green/5 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-bold text-sm text-kb-charcoal">{addr.name}</span>
-                      <span className="bg-kb-green text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                        DEFAULT ADDRESS
-                      </span>
+              {(!user.addresses || user.addresses.length === 0) ? (
+                <div className="text-center py-10 bg-slate-50 rounded-2xl text-slate-500 space-y-2">
+                  <MapPin className="w-8 h-8 text-slate-400 mx-auto" />
+                  <p className="text-sm font-semibold">No saved addresses found.</p>
+                  <p className="text-xs text-slate-400">Add an address during checkout or click above to add a new address.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {user.addresses.map((addr) => (
+                    <div key={addr.id} className="p-5 rounded-2xl border-2 border-kb-green/30 bg-kb-green/5 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-sm text-kb-charcoal">{addr.name}</span>
+                        <span className="bg-kb-green text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                          DEFAULT ADDRESS
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}
+                      </p>
+                      <span className="text-xs text-slate-500 block">Phone: {addr.phone}</span>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {addr.addressLine}, {addr.city}, {addr.state} - {addr.pincode}
-                    </p>
-                    <span className="text-xs text-slate-500 block">Phone: {addr.phone}</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
