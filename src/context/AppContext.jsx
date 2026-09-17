@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { PRODUCTS as INITIAL_PRODUCTS, COMPANY_INFO } from '../data/mockData';
 import { authService } from '../services/authService';
+import { accountService } from '../services/accountService';
 
 const AppContext = createContext();
 
@@ -63,15 +64,26 @@ export const AppProvider = ({ children }) => {
       setIsLoadingAuth(true);
       try {
         const userDto = await authService.getCurrentUser(storedToken);
+        let userProfile = null;
+        let userAddresses = [];
+
+        try {
+          userProfile = await accountService.getProfile(storedToken);
+          userAddresses = await accountService.getAddresses(storedToken);
+        } catch (profileErr) {
+          console.warn('Could not load profile or addresses:', profileErr.message);
+        }
+
         setToken(storedToken);
         setUser({
           isLoggedIn: true,
           id: userDto.id,
-          name: userDto.fullName || userDto.name || '',
+          name: userProfile?.fullName || userDto.fullName || '',
           email: userDto.email || '',
-          phone: userDto.phone || '',
+          phone: userProfile?.phone || userDto.phone || '',
           role: userDto.role || 'Customer',
-          addresses: []
+          profile: userProfile,
+          addresses: userAddresses || []
         });
       } catch (err) {
         console.warn('Session expired or invalid token:', err.message);
@@ -84,6 +96,7 @@ export const AppProvider = ({ children }) => {
           email: '',
           phone: '',
           role: 'Customer',
+          profile: null,
           addresses: []
         });
       } finally {
@@ -305,6 +318,27 @@ export const AppProvider = ({ children }) => {
     addToast('Product deleted from catalog', 'info');
   };
 
+  // Refresh Profile & Addresses Helper
+  const refreshUserData = async (activeToken = token) => {
+    if (!activeToken) return;
+    try {
+      const [profileData, addressesData] = await Promise.all([
+        accountService.getProfile(activeToken).catch(() => null),
+        accountService.getAddresses(activeToken).catch(() => [])
+      ]);
+      setUser((prev) => ({
+        ...prev,
+        name: profileData?.fullName || prev.name,
+        phone: profileData?.phone || prev.phone,
+        role: profileData?.role || prev.role,
+        profile: profileData,
+        addresses: addressesData || []
+      }));
+    } catch (err) {
+      console.error('Failed to refresh user data:', err);
+    }
+  };
+
   // Real Auth Actions
   const loginUser = async (loginData) => {
     setIsLoadingAuth(true);
@@ -313,14 +347,26 @@ export const AppProvider = ({ children }) => {
       const { token: jwtToken, user: userDto, message } = response;
       localStorage.setItem('kb_auth_token', jwtToken);
       setToken(jwtToken);
+
+      // Hydrate profile and addresses
+      let userProfile = null;
+      let userAddresses = [];
+      try {
+        userProfile = await accountService.getProfile(jwtToken);
+        userAddresses = await accountService.getAddresses(jwtToken);
+      } catch (err) {
+        console.warn('Initial account details fetch fallback:', err);
+      }
+
       setUser({
         isLoggedIn: true,
         id: userDto.id,
-        name: userDto.fullName || '',
+        name: userProfile?.fullName || userDto.fullName || '',
         email: userDto.email || '',
-        phone: userDto.phone || '',
+        phone: userProfile?.phone || userDto.phone || '',
         role: userDto.role || 'Customer',
-        addresses: []
+        profile: userProfile,
+        addresses: userAddresses || []
       });
       addToast(message || 'Logged in successfully!', 'success');
 
@@ -345,14 +391,25 @@ export const AppProvider = ({ children }) => {
       const { token: jwtToken, user: userDto, message } = response;
       localStorage.setItem('kb_auth_token', jwtToken);
       setToken(jwtToken);
+
+      let userProfile = null;
+      let userAddresses = [];
+      try {
+        userProfile = await accountService.getProfile(jwtToken);
+        userAddresses = await accountService.getAddresses(jwtToken);
+      } catch (err) {
+        console.warn('Initial account details fetch fallback:', err);
+      }
+
       setUser({
         isLoggedIn: true,
         id: userDto.id,
-        name: userDto.fullName || '',
+        name: userProfile?.fullName || userDto.fullName || '',
         email: userDto.email || '',
-        phone: userDto.phone || '',
+        phone: userProfile?.phone || userDto.phone || '',
         role: userDto.role || 'Customer',
-        addresses: []
+        profile: userProfile,
+        addresses: userAddresses || []
       });
       addToast(message || 'Account created successfully!', 'success');
 
@@ -380,6 +437,7 @@ export const AppProvider = ({ children }) => {
       email: '',
       phone: '',
       role: 'Customer',
+      profile: null,
       addresses: []
     });
     addToast('Logged out successfully.', 'info');
@@ -434,6 +492,7 @@ export const AppProvider = ({ children }) => {
         token,
         user,
         setUser,
+        refreshUserData,
         isLoadingAuth,
         loginUser,
         registerUser,

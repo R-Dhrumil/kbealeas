@@ -13,7 +13,8 @@ import {
   Phone,
   Sparkles,
   ArrowRight,
-  Package
+  Package,
+  ShieldCheck
 } from 'lucide-react';
 import { Button } from './Button';
 
@@ -292,6 +293,28 @@ export const Header = () => {
                       </div>
                       <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
                     </button>
+
+                    {/* Admin Dashboard Entry (if Admin) */}
+                    {user?.role === 'Admin' && (
+                      <button
+                        onClick={() => {
+                          setIsAccountDropdownOpen(false);
+                          navigateTo('admin');
+                        }}
+                        className="w-full p-2.5 rounded-2xl bg-purple-50/70 hover:bg-purple-100/70 text-left flex items-center justify-between transition-all group active:scale-98 cursor-pointer border border-purple-200/60"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center group-hover:scale-105 transition-transform">
+                            <ShieldCheck className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <span className="text-xs font-extrabold text-purple-900 block">Admin Center</span>
+                            <span className="text-[10px] text-purple-700 block">Manage catalog & orders</span>
+                          </div>
+                        </div>
+                        <ArrowRight className="w-3.5 h-3.5 text-purple-700 group-hover:translate-x-0.5 transition-transform" />
+                      </button>
+                    )}
                   </div>
 
                   <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-xs px-2">
