@@ -3,8 +3,7 @@ import { useApp } from '../context/AppContext';
 import { BRANDS } from '../data/mockData';
 import { ProductCard } from '../components/common/ProductCard';
 import { Button } from '../components/common/Button';
-import { Badge } from '../components/common/Badge';
-import { Filter, X, SlidersHorizontal, ArrowUpDown, Sparkles, Check } from 'lucide-react';
+import { Filter, X, SlidersHorizontal, Sparkles, Check } from 'lucide-react';
 
 export const CatalogView = () => {
   const {
@@ -70,63 +69,7 @@ export const CatalogView = () => {
     searchQuery.trim() !== '';
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8 animate-fade-in">
-      {/* Top Banner Header */}
-      <div className="bg-gradient-to-r from-kb-green to-emerald-950 text-white p-8 sm:p-10 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 text-center md:text-left">
-          <Badge brand="gold">KB PREMIX CATALOG</Badge>
-          <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-white">
-            Shop Premium Beverage Premixes
-          </h1>
-          <p className="text-emerald-100 text-xs sm:text-sm max-w-xl font-light">
-            Browse our complete collection of tea, coffee, iced tea, and chocolate premixes across KB's 4 signature brands: Vrinda, Sangam, Urban Roast, and Coco Joy.
-          </p>
-        </div>
-
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl text-center text-xs text-emerald-100 shrink-0">
-          <span className="text-kb-gold font-bold text-xl block font-heading">
-            {filteredProducts.length} Premixes
-          </span>
-          <span>In Stock for Fast Delivery</span>
-        </div>
-      </div>
-
-      {/* Brand Selection Pills */}
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 no-scrollbar">
-        <button
-          onClick={() => setSelectedBrandFilter('all')}
-          className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 border ${
-            selectedBrandFilter === 'all'
-              ? 'bg-kb-green text-white border-kb-green shadow-md shadow-kb-green/20'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-          }`}
-        >
-          All KB Brands ({products.length})
-        </button>
-
-        {Object.values(BRANDS).map((b) => {
-          const isSelected = selectedBrandFilter === b.id;
-          const count = products.filter((p) => p.brandId === b.id).length;
-          return (
-            <button
-              key={b.id}
-              onClick={() => setSelectedBrandFilter(b.id)}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all shrink-0 flex items-center gap-2 border ${
-                isSelected
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-md'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: b.themeColor }}></span>
-              <span>{b.name}</span>
-              <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'}`}>
-                {count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
+    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 animate-fade-in">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* BRAND-ONLY FILTER SIDEBAR */}
         <aside
@@ -229,49 +172,17 @@ export const CatalogView = () => {
 
         {/* MAIN PRODUCT CATALOG GRID AREA */}
         <main className="lg:col-span-9 space-y-6">
-          {/* Controls Bar */}
-          <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-kb-soft flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Mobile Filter Button */}
+          <div className="lg:hidden">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsFilterMobileOpen(true)}
               icon={SlidersHorizontal}
-              className="lg:hidden w-full sm:w-auto"
+              className="w-full justify-center"
             >
               Filter Brands
             </Button>
-
-            {/* Active Chips */}
-            <div className="flex items-center gap-2 flex-wrap text-xs">
-              <span className="text-slate-400 font-medium">Showing {filteredProducts.length} items</span>
-
-              {selectedBrandFilter !== 'all' && (
-                <span className="bg-slate-900 text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1">
-                  Brand: {BRANDS[selectedBrandFilter]?.name}
-                  <X
-                    className="w-3.5 h-3.5 cursor-pointer hover:text-rose-300"
-                    onClick={() => setSelectedBrandFilter('all')}
-                  />
-                </span>
-              )}
-            </div>
-
-            {/* Sort Selection */}
-            <div className="flex items-center gap-2 shrink-0">
-              <ArrowUpDown className="w-4 h-4 text-slate-400" />
-              <span className="text-xs text-slate-500 font-medium hidden sm:inline">Sort:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-slate-100 border border-transparent rounded-xl px-3 py-1.5 text-xs font-semibold text-kb-charcoal focus:bg-white focus:border-kb-green focus:outline-none"
-              >
-                <option value="featured">Featured First</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rated</option>
-                <option value="name">Name A-Z</option>
-              </select>
-            </div>
           </div>
 
           {/* Product Grid */}
