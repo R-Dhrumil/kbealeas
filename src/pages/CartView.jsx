@@ -23,7 +23,10 @@ export const CartView = () => {
     cartTax,
     cartTotal,
     toggleWishlist,
-    navigateTo
+    navigateTo,
+    user,
+    openAuthModal,
+    addToast
   } = useApp();
 
   const freeShippingThreshold = 999;
@@ -200,10 +203,29 @@ export const CartView = () => {
             </div>
           </div>
 
+          {!user?.isLoggedIn && (
+            <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-3.5 flex items-center justify-between text-xs text-amber-950">
+              <span>Sign in to autofill addresses & track orders</span>
+              <button
+                type="button"
+                onClick={() => openAuthModal('login')}
+                className="font-bold text-kb-green underline ml-2 cursor-pointer hover:text-emerald-800"
+              >
+                Sign In
+              </button>
+            </div>
+          )}
+
           <Button
             variant="primary"
             size="lg"
-            onClick={() => navigateTo('checkout')}
+            onClick={() => {
+              if (!user?.isLoggedIn) {
+                openAuthModal('login', 'checkout', 'Please sign in to proceed to checkout.');
+                return;
+              }
+              navigateTo('checkout');
+            }}
             icon={ArrowRight}
             className="w-full shadow-lg shadow-kb-green/20"
           >

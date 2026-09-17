@@ -13,26 +13,19 @@ export const AppProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot'
+  const [authRedirectTarget, setAuthRedirectTarget] = useState(null);
+  const [authPromptMessage, setAuthPromptMessage] = useState(null);
 
   // Products Database (Stateful for Admin CRUD)
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
 
-  // Cart State (Persisted in localStorage)
+  // Cart State (Persisted in localStorage for visitors and members alike)
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('kb_cart');
-      return saved ? JSON.parse(saved) : [
-        {
-          product: INITIAL_PRODUCTS[0], // Vrinda Cardamom
-          variant: INITIAL_PRODUCTS[0].variants[0],
-          quantity: 2
-        },
-        {
-          product: INITIAL_PRODUCTS[3], // Sangam Guava Chilly
-          variant: INITIAL_PRODUCTS[3].variants[0],
-          quantity: 1
-        }
-      ];
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
@@ -42,7 +35,7 @@ export const AppProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem('kb_wishlist');
-      return saved ? JSON.parse(saved) : [INITIAL_PRODUCTS[0].id, INITIAL_PRODUCTS[7].id];
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
@@ -187,7 +180,7 @@ export const AppProvider = ({ children }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Cart Operations
+  // Cart Operations (Freely accessible for visitors and members)
   const addToCart = (product, variant, quantity = 1) => {
     setCart((prev) => {
       const existingIndex = prev.findIndex(
@@ -201,6 +194,7 @@ export const AppProvider = ({ children }) => {
       return [...prev, { product, variant, quantity }];
     });
     addToast(`Added ${product.name} (${variant.packSize}) to Cart!`, 'success');
+    return true;
   };
 
   const removeFromCart = (productId, variantId) => {
@@ -232,6 +226,10 @@ export const AppProvider = ({ children }) => {
 
   // Wishlist Operations
   const toggleWishlist = (productId) => {
+    if (!user?.isLoggedIn) {
+      openAuthModal('login', null, 'Please sign in to save items to your wishlist.');
+      return;
+    }
     setWishlist((prev) => {
       if (prev.includes(productId)) {
         addToast('Removed from Wishlist', 'info');
@@ -325,6 +323,12 @@ export const AppProvider = ({ children }) => {
         addresses: []
       });
       addToast(message || 'Logged in successfully!', 'success');
+
+      if (authRedirectTarget) {
+        navigateTo(authRedirectTarget);
+        setAuthRedirectTarget(null);
+      }
+
       return { success: true, user: userDto };
     } catch (error) {
       addToast(error.message, 'error');
@@ -351,6 +355,12 @@ export const AppProvider = ({ children }) => {
         addresses: []
       });
       addToast(message || 'Account created successfully!', 'success');
+
+      if (authRedirectTarget) {
+        navigateTo(authRedirectTarget);
+        setAuthRedirectTarget(null);
+      }
+
       return { success: true, user: userDto };
     } catch (error) {
       addToast(error.message, 'error');
@@ -373,7 +383,21 @@ export const AppProvider = ({ children }) => {
       addresses: []
     });
     addToast('Logged out successfully.', 'info');
-    navigateTo('auth');
+    navigateTo('home');
+  };
+
+  // Auth Modal Handlers
+  const openAuthModal = (mode = 'login', redirectTarget = null, promptMessage = null) => {
+    setAuthModalMode(mode);
+    setAuthRedirectTarget(redirectTarget);
+    setAuthPromptMessage(promptMessage);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+    setAuthRedirectTarget(null);
+    setAuthPromptMessage(null);
   };
 
   return (
@@ -414,6 +438,14 @@ export const AppProvider = ({ children }) => {
         loginUser,
         registerUser,
         logoutUser,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        authModalMode,
+        setAuthModalMode,
+        authRedirectTarget,
+        authPromptMessage,
+        openAuthModal,
+        closeAuthModal,
         orders,
         placeOrder,
         lastPlacedOrder,

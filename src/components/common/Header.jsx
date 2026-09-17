@@ -31,7 +31,8 @@ export const Header = () => {
     searchQuery,
     setSearchQuery,
     user,
-    logoutUser
+    logoutUser,
+    openAuthModal
   } = useApp();
 
   const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
@@ -291,12 +292,8 @@ export const Header = () => {
 
               {/* Sign In Button */}
               <button
-                onClick={() => navigateTo('auth')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs transition-all duration-200 active:scale-95 cursor-pointer ${
-                  activeView === 'auth'
-                    ? 'bg-kb-green text-white shadow-md shadow-kb-green/20'
-                    : 'bg-kb-green text-white hover:bg-emerald-700 shadow-xs'
-                }`}
+                onClick={() => openAuthModal('login')}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-kb-green text-white hover:bg-emerald-700 shadow-xs transition-all duration-200 active:scale-95 cursor-pointer"
               >
                 <User className="w-3.5 h-3.5 text-white" />
                 <span>Sign In</span>
@@ -541,7 +538,7 @@ export const Header = () => {
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    navigateTo('auth');
+                    openAuthModal('login');
                   }}
                   className="w-full text-left p-3 bg-kb-green text-white rounded-xl flex items-center justify-between text-xs font-bold active:scale-98 shadow-xs cursor-pointer"
                 >

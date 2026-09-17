@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export const ProductDetailView = () => {
-  const { selectedProduct, products, addToCart, toggleWishlist, isInWishlist, navigateTo, addToast } = useApp();
+  const { selectedProduct, products, addToCart, toggleWishlist, isInWishlist, navigateTo, addToast, user, openAuthModal } = useApp();
 
   const product = selectedProduct || products[0];
   const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
@@ -33,6 +33,10 @@ export const ProductDetailView = () => {
 
   const handleBuyNow = () => {
     addToCart(product, selectedVariant, quantity);
+    if (!user?.isLoggedIn) {
+      openAuthModal('login', 'checkout', 'Please sign in to complete your checkout.');
+      return;
+    }
     navigateTo('checkout');
   };
 

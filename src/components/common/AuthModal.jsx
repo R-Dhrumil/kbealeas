@@ -24,7 +24,8 @@ export const AuthModal = () => {
     setAuthModalMode,
     loginUser,
     registerUser,
-    isLoadingAuth
+    isLoadingAuth,
+    authPromptMessage
   } = useApp();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -131,7 +132,7 @@ export const AuthModal = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
       onClick={closeAuthModal}
       role="dialog"
       aria-modal="true"
@@ -201,6 +202,14 @@ export const AuthModal = () => {
             >
               Create Account
             </button>
+          </div>
+        )}
+
+        {/* Prompt Notice Banner (e.g. checkout or wishlist prompt) */}
+        {authPromptMessage && (
+          <div className="mb-4 bg-emerald-50 border border-emerald-200/80 text-emerald-950 text-xs rounded-xl p-3 flex items-center gap-2.5 shadow-xs animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 text-kb-green shrink-0" />
+            <span className="font-medium leading-snug">{authPromptMessage}</span>
           </div>
         )}
 

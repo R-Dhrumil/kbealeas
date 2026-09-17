@@ -14,7 +14,10 @@ export const MiniCartDrawer = () => {
     cartShipping,
     cartTax,
     cartTotal,
-    navigateTo
+    navigateTo,
+    user,
+    openAuthModal,
+    addToast
   } = useApp();
 
   if (!isMiniCartOpen) return null;
@@ -68,6 +71,23 @@ export const MiniCartDrawer = () => {
               ></div>
             </div>
           </div>
+
+          {/* Guest Sign-in Encouragement Banner */}
+          {!user?.isLoggedIn && cart.length > 0 && (
+            <div className="bg-amber-50/90 border-b border-amber-200/60 px-4 py-2 flex items-center justify-between text-[11px] text-amber-900">
+              <span>Sign in to save this cart across devices & checkout faster</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMiniCartOpen(false);
+                  openAuthModal('login');
+                }}
+                className="font-bold text-kb-green underline ml-2 cursor-pointer shrink-0 hover:text-emerald-800"
+              >
+                Sign In
+              </button>
+            </div>
+          )}
 
           {/* Drawer Cart Item List */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 divide-y divide-slate-100">
@@ -191,6 +211,10 @@ export const MiniCartDrawer = () => {
                   icon={ArrowRight}
                   onClick={() => {
                     setIsMiniCartOpen(false);
+                    if (!user?.isLoggedIn) {
+                      openAuthModal('login', 'checkout', 'Please sign in to proceed to checkout.');
+                      return;
+                    }
                     navigateTo('checkout');
                   }}
                 >

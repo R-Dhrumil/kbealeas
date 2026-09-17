@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 export const CheckoutView = () => {
-  const { cart, cartSubtotal, cartShipping, cartTax, cartTotal, placeOrder, user, navigateTo } = useApp();
+  const { cart, cartSubtotal, cartShipping, cartTax, cartTotal, placeOrder, user, navigateTo, openAuthModal, addToast } = useApp();
 
   const [step, setStep] = useState(1); // 1: Contact, 2: Address, 3: Shipping, 4: Payment
 
@@ -37,6 +37,10 @@ export const CheckoutView = () => {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
+    if (!user?.isLoggedIn) {
+      openAuthModal('login', 'checkout', 'Please sign in to complete and place your order.');
+      return;
+    }
     placeOrder({
       address: {
         addressLine: formData.addressLine,
@@ -51,6 +55,30 @@ export const CheckoutView = () => {
   if (cart.length === 0) {
     navigateTo('cart');
     return null;
+  }
+
+  if (!user?.isLoggedIn) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-6 animate-fade-in">
+        <div className="w-16 h-16 rounded-full bg-emerald-100 text-kb-green mx-auto flex items-center justify-center">
+          <User className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <Badge brand="kb">SECURE CHECKOUT</Badge>
+          <h2 className="font-heading font-extrabold text-2xl text-kb-charcoal">Sign In to Complete Order</h2>
+          <p className="text-xs text-slate-500 max-w-xs mx-auto">
+            Please sign in or create an account with KB to access your saved address and proceed with payment.
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          onClick={() => openAuthModal('login', 'checkout')}
+          className="w-full justify-center py-3"
+        >
+          Sign In / Register
+        </Button>
+      </div>
+    );
   }
 
   return (
