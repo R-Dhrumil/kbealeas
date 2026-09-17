@@ -27,8 +27,8 @@ export const StaticPagesView = ({ pageType = 'about' }) => {
       a: "Our headquarters are in Vadodara, Gujarat (202, Sai Pancham Flat, Gajanand Society, Manjalpur Naka, Vadodara - 390011). Call us directly at +91 96240 91000 or +91 85111 16618."
     },
     {
-      q: "Do you offer wholesale bulk supply for businesses and distributors?",
-      a: "Yes! We provide 1 Kg commercial pouch packaging with high profit margins for hotels, resorts, office admins, and distributors."
+      q: "How fast is shipping and delivery across India?",
+      a: "All orders are dispatched directly from our Vadodara central hub within 24 hours. Delivery takes 2-4 business days across India."
     }
   ];
 

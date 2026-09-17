@@ -79,8 +79,8 @@ export const Footer = () => {
                 </button>
               </li>
               <li>
-                <button onClick={() => navigateTo('wholesale')} className="hover:text-white transition-colors">
-                  Become a Distributor
+                <button onClick={() => navigateTo('catalog')} className="hover:text-white transition-colors">
+                  Shop All Premixes
                 </button>
               </li>
               <li>

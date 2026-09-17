@@ -57,10 +57,10 @@ export const BrandView = ({ brandId }) => {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => navigateTo('wholesale')}
+                onClick={() => navigateTo('catalog')}
                 className="mt-2 text-xs"
               >
-                Bulk B2B Inquiry
+                Shop All Premixes
               </Button>
             </div>
           </div>

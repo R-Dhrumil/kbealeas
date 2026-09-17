@@ -433,7 +433,7 @@ export const HomeView = () => {
           <div className="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-center space-y-1">
             <span className="text-2xl sm:text-3xl font-extrabold text-sky-400 font-heading block">99.8%</span>
             <span className="text-xs text-slate-300 font-semibold block">Retention Rate</span>
-            <span className="text-[10px] text-slate-500 block">Repeat Wholesale Orders</span>
+            <span className="text-[10px] text-slate-500 block">Repeat Customer Orders</span>
           </div>
 
           <div className="bg-slate-900/90 p-5 rounded-2xl border border-slate-800 text-center space-y-1">
@@ -567,17 +567,17 @@ export const HomeView = () => {
         <div className="pt-6 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10 text-xs">
           <div className="flex items-center gap-3 text-slate-300">
             <ShieldCheck className="w-5 h-5 text-kb-gold shrink-0" />
-            <span>Looking for 1 Kg bulk commercial pouch supply for your hotel, office, or clinic?</span>
+            <span>Discover our full collection of authentic Indian tea, coffee, and iced tea premixes.</span>
           </div>
 
           <Button
             variant="secondary"
             size="md"
-            onClick={() => navigateTo('wholesale')}
+            onClick={() => navigateTo('catalog')}
             icon={ArrowRight}
             className="shrink-0 text-xs font-bold shadow-lg"
           >
-            SUBMIT WHOLESALE B2B INQUIRY
+            EXPLORE SHOP CATALOG
           </Button>
         </div>
       </section>

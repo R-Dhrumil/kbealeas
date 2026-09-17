@@ -12,7 +12,6 @@ import { OrderSuccessView } from './pages/OrderSuccessView';
 import { AccountView } from './pages/AccountView';
 import { WishlistView } from './pages/WishlistView';
 import { AdminView } from './pages/AdminView';
-import { WholesaleView } from './pages/WholesaleView';
 import { AuthView } from './pages/AuthView';
 import { StaticPagesView } from './pages/StaticPagesView';
 
@@ -37,7 +36,6 @@ const MainLayout = () => {
       {activeView === 'order-success' && <OrderSuccessView />}
       {activeView === 'account' && <AccountView />}
       {activeView === 'wishlist' && <WishlistView />}
-      {activeView === 'wholesale' && <WholesaleView />}
       {activeView === 'auth' && <AuthView />}
       {activeView === 'about' && <StaticPagesView pageType="about" />}
       {activeView === 'contact' && <StaticPagesView pageType="contact" />}
