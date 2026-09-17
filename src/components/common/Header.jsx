@@ -157,7 +157,7 @@ export const Header = () => {
 
               {/* Sign In Button */}
               <button
-                onClick={() => openAuthModal('login')}
+                onClick={() => navigateTo('auth')}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold text-xs bg-kb-green text-white hover:bg-emerald-700 shadow-xs transition-all duration-200 active:scale-95 cursor-pointer"
               >
                 <User className="w-3.5 h-3.5 text-white" />
@@ -429,7 +429,7 @@ export const Header = () => {
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    openAuthModal('login');
+                    navigateTo('auth');
                   }}
                   className="w-full text-left p-3 bg-kb-green text-white rounded-xl flex items-center justify-between text-xs font-bold active:scale-98 shadow-xs cursor-pointer"
                 >

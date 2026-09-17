@@ -4,6 +4,7 @@ import { Footer } from '../common/Footer';
 import { MiniCartDrawer } from '../common/MiniCartDrawer';
 import { ToastContainer } from '../common/ToastContainer';
 import { AuthModal } from '../common/AuthModal';
+import { CheckoutNoticeModal } from '../common/CheckoutNoticeModal';
 
 export const ShopLayout = ({ children }) => {
   return (
@@ -11,6 +12,7 @@ export const ShopLayout = ({ children }) => {
       <Header />
       <MiniCartDrawer />
       <AuthModal />
+      <CheckoutNoticeModal />
       <ToastContainer />
 
       <main className="flex-1">

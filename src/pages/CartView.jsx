@@ -26,6 +26,7 @@ export const CartView = () => {
     navigateTo,
     user,
     openAuthModal,
+    openCheckoutNotice,
     addToast
   } = useApp();
 
@@ -221,7 +222,7 @@ export const CartView = () => {
             size="lg"
             onClick={() => {
               if (!user?.isLoggedIn) {
-                openAuthModal('login', 'checkout', 'Please sign in to proceed to checkout.');
+                openCheckoutNotice('To complete your checkout and delivery, you need to sign in or create an account.');
                 return;
               }
               navigateTo('checkout');

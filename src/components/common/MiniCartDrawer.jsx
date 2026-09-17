@@ -17,6 +17,7 @@ export const MiniCartDrawer = () => {
     navigateTo,
     user,
     openAuthModal,
+    openCheckoutNotice,
     addToast
   } = useApp();
 
@@ -212,7 +213,7 @@ export const MiniCartDrawer = () => {
                   onClick={() => {
                     setIsMiniCartOpen(false);
                     if (!user?.isLoggedIn) {
-                      openAuthModal('login', 'checkout', 'Please sign in to proceed to checkout.');
+                      openCheckoutNotice('To proceed with checkout and order dispatch, please sign in.');
                       return;
                     }
                     navigateTo('checkout');

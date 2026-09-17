@@ -12,14 +12,18 @@ import { OrderSuccessView } from './pages/OrderSuccessView';
 import { AccountView } from './pages/AccountView';
 import { WishlistView } from './pages/WishlistView';
 import { AdminView } from './pages/AdminView';
+import { AdminLoginView } from './pages/AdminLoginView';
 import { AuthView } from './pages/AuthView';
 import { StaticPagesView } from './pages/StaticPagesView';
 
 const MainLayout = () => {
-  const { activeView } = useApp();
+  const { activeView, user } = useApp();
 
-  // Admin view renders its own full layout
+  // Admin view: if not logged in as Admin, show separate Admin Login page
   if (activeView === 'admin') {
+    if (!user?.isLoggedIn || user.role !== 'Admin') {
+      return <AdminLoginView />;
+    }
     return <AdminView />;
   }
 

@@ -6,18 +6,44 @@ import { accountService } from '../services/accountService';
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Navigation State
-  const [activeView, setActiveView] = useState('home');
+  // Navigation State - inspect window.location.pathname for initial view (e.g. /admin)
+  const getInitialView = () => {
+    const path = window.location.pathname.toLowerCase();
+    if (path === '/admin' || path.startsWith('/admin/')) return 'admin';
+    if (path === '/auth' || path === '/login') return 'auth';
+    if (path === '/cart') return 'cart';
+    if (path === '/checkout') return 'checkout';
+    if (path === '/catalog' || path === '/shop') return 'catalog';
+    if (path === '/account') return 'account';
+    return 'home';
+  };
+
+  const [activeView, setActiveView] = useState(getInitialView);
   const [selectedProduct, setSelectedProduct] = useState(INITIAL_PRODUCTS[0]);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('all');
   const [selectedBrandFilter, setSelectedBrandFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Dedicated "Sign In Required for Checkout" Notice Modal Popup
+  const [isCheckoutNoticeOpen, setIsCheckoutNoticeOpen] = useState(false);
+  const [checkoutNoticeMessage, setCheckoutNoticeMessage] = useState('Please sign in to proceed to checkout.');
+
+  // Auth Modal State
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'forgot'
   const [authRedirectTarget, setAuthRedirectTarget] = useState(null);
   const [authPromptMessage, setAuthPromptMessage] = useState(null);
+
+  // Listen to browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveView(getInitialView());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Products Database (Stateful for Admin CRUD)
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
@@ -183,14 +209,31 @@ export const AppProvider = ({ children }) => {
     }, 4000);
   };
 
-  // Navigation Trigger Helper
+  // Navigation Trigger Helper with history push
   const navigateTo = (viewName, params = {}) => {
     if (params.product) setSelectedProduct(params.product);
     if (params.category) setSelectedCategoryFilter(params.category);
     if (params.brand) setSelectedBrandFilter(params.brand);
     setActiveView(viewName);
     setIsMobileMenuOpen(false);
+
+    // Sync window pathname for clean URL navigation
+    const targetPath = viewName === 'home' ? '/' : `/${viewName}`;
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({ view: viewName }, '', targetPath);
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Dedicated Checkout Login Notification Modal Controls
+  const openCheckoutNotice = (message = 'To proceed with checkout and delivery, you need to sign in or create an account.') => {
+    setCheckoutNoticeMessage(message);
+    setIsCheckoutNoticeOpen(true);
+  };
+
+  const closeCheckoutNotice = () => {
+    setIsCheckoutNoticeOpen(false);
   };
 
   // Cart Operations (Freely accessible for visitors and members)
@@ -505,6 +548,10 @@ export const AppProvider = ({ children }) => {
         authPromptMessage,
         openAuthModal,
         closeAuthModal,
+        isCheckoutNoticeOpen,
+        checkoutNoticeMessage,
+        openCheckoutNotice,
+        closeCheckoutNotice,
         orders,
         placeOrder,
         lastPlacedOrder,
